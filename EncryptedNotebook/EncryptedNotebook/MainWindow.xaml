@@ -17,7 +17,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <TextBlock HorizontalAlignment="Center" FontSize="30" VerticalAlignment="Center" TextAlignment="Center">Welcome</TextBlock>
-        <TextBox x:Name="NoteBox" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible" Grid.Row="1" Margin="20" AcceptsReturn="True"/>
+        <TextBox x:Name="NoteBox" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible" Grid.Row="1" Margin="10,19,30,21" AcceptsReturn="True"/>
         <StackPanel Margin="10" Grid.Column="1" Grid.Row="1">
             <DataGrid Name="dataGrid"/>
         </StackPanel>

@@ -26,22 +26,25 @@ namespace EncryptedNotebook
         {
             DataContext = this;
             InitializeComponent();
-
             notes = new List<Notes>();
             dataGrid.ItemsSource = notes;
+            Notes note = (Notes)dataGrid.SelectedItem;
+
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (NoteBox.Text != null)
+            if (NoteBox.Text != "")
             {
                 Notes note = new Notes();
                 note.Body = NoteBox.Text;
                 notes.Add(note);
+                dataGrid.UpdateLayout();
+                dataGrid.Items.Refresh();
+
                 NoteBox.Text = "";
                 NoteBox.IsReadOnly = true;
             }
-
         }
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
