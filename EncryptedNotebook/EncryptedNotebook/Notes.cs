@@ -8,8 +8,10 @@ namespace EncryptedNotebook
 {
     public class Notes
     {
-        public string Body { get; set; }
+        public int Id { get; set; }
+        public string Subject { get; set; }
         public DateTime Date { get; set; }
-        public string author { get; set; }
+        public string Author { get; set; }
+        public string Body { get; set; }
     }
 }

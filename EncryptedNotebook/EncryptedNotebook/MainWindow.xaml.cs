@@ -31,6 +31,32 @@ namespace EncryptedNotebook
             dataGrid.ItemsSource = notes;
         }
 
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (NoteBox.Text != null)
+            {
+                Notes note = new Notes();
+                note.Body = NoteBox.Text;
+                notes.Add(note);
+                NoteBox.Text = "";
+                NoteBox.IsReadOnly = true;
+            }
 
+        }
+
+        private void UpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            NoteBox.IsReadOnly = false;
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            NoteBox.IsReadOnly = false;
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }
