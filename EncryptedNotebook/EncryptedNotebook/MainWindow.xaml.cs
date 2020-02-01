@@ -59,7 +59,24 @@ namespace EncryptedNotebook
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            //notes = new List<Notes>();
+            Notes notes = new Notes();
+            notes = (Notes)dataGrid.SelectedItem;
+            dataGrid.Items.RemoveAt(dataGrid.SelectedIndex);
+        }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Notes notes = new Notes();
+           
+            try
+            {
+                notes = (Notes)dataGrid.SelectedItem;
+                NoteBox.Text = notes.Body;
+
+            }
+            catch { }
+
         }
     }
 }
