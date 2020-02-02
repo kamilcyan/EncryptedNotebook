@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace EncryptedNotebook
 {
-    /// <summary>
-    /// Logika interakcji dla klasy MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public List<Notes> notes { get; set; }
@@ -39,7 +36,6 @@ namespace EncryptedNotebook
                 Notes note = new Notes();
                 note.Body = NoteBox.Text;
                 notes.Add(note);
-                dataGrid.UpdateLayout();
                 dataGrid.Items.Refresh();
 
                 NoteBox.Text = "";
@@ -59,10 +55,15 @@ namespace EncryptedNotebook
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            //notes = new List<Notes>();
-            Notes notes = new Notes();
-            notes = (Notes)dataGrid.SelectedItem;
-            dataGrid.Items.RemoveAt(dataGrid.SelectedIndex);
+            Notes note = new Notes();
+            note = (Notes)dataGrid.SelectedItem;
+            if (note != null)
+            {
+                notes.Remove(note);
+                NoteBox.Text = "";
+                dataGrid.Items.Refresh();
+            }
+
         }
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -73,7 +74,6 @@ namespace EncryptedNotebook
             {
                 notes = (Notes)dataGrid.SelectedItem;
                 NoteBox.Text = notes.Body;
-
             }
             catch { }
 

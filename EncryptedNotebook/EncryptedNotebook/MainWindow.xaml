@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EncryptedNotebook"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="600" Width="1000">
+    <Grid Background="Beige">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="*"/>
@@ -19,7 +19,7 @@
         <TextBlock HorizontalAlignment="Center" FontSize="30" VerticalAlignment="Center" TextAlignment="Center">Welcome</TextBlock>
         <TextBox x:Name="NoteBox" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible" Grid.Row="1" Margin="10,19,30,21" AcceptsReturn="True"/>
         <StackPanel Margin="10" Grid.Column="1" Grid.Row="1">
-            <DataGrid Name="dataGrid" SelectionChanged="DataGrid_SelectionChanged"/>
+            <DataGrid HorizontalAlignment="Center" HorizontalContentAlignment="Center"  Name="dataGrid" SelectionChanged="DataGrid_SelectionChanged"/>
         </StackPanel>
         <WrapPanel Grid.Row="2">
             <Button x:Name="SaveButton" Content="Save" Height="20" Margin="20" Width="90" VerticalAlignment="Center" Click="SaveButton_Click"/>
