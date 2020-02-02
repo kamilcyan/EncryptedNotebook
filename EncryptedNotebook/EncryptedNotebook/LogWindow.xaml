@@ -26,12 +26,15 @@
         <Grid Width="280" Height="240" VerticalAlignment="Bottom" Margin="0,100">
             <TextBlock Text="LOGIN" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" Foreground="Gray" FontSize="18"/>
             <StackPanel VerticalAlignment="Center" Margin="10">
-                <TextBox Margin="0,10"/>
-                <PasswordBox  Margin="0,10"/>
+                <TextBox x:Name="UserBox" Margin="0,10"/>
+                <PasswordBox x:Name="PasswordBox"  Margin="0,10"/>
             </StackPanel>
         </Grid>
-
-        <Button VerticalAlignment="Bottom" Margin="0,85" Width="150" Content="LOGIN"/>
+        <WrapPanel VerticalAlignment="Bottom">
+            <Button x:Name="LoginButton"  VerticalAlignment="Bottom" Margin="28,85" Width="80" Content="LOGIN" Click="LoginButton_Click"/>
+            <Button x:Name="AddUserButtonn"  VerticalAlignment="Bottom" Margin="0, 85" Width="80" Content="ADD USER" Click="AddUserButton_Click"/>
+            <Button x:Name="CancelButtonn"  VerticalAlignment="Bottom" Margin="25, 85" Width="80" Content="CANCEL" Click="CancelButton_Click"/>
+        </WrapPanel>
         <TextBlock Text="Did you forgot your password?" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="50"/>
     </Grid>
 </Window>
