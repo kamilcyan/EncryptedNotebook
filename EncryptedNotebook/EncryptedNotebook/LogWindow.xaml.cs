@@ -72,22 +72,14 @@ namespace EncryptedNotebook
                 if (sqlCon.State == ConnectionState.Closed)
                     sqlCon.Open();
                 string user = UserBox.Text;
-                var password = PasswordBox.Password;
-                String query = "INSERT INTO tblUser Username=@Username AND Password=@Password";
+                var Password = PasswordBox.Password;
+                String query = "INSERT INTO tblUser (UserName, Password) VALUES (@Username, @Password)";
                 SqlCommand sqlCmd = new SqlCommand(query, sqlCon);
-                sqlCmd.Parameters.AddWithValue("@Username", UserBox.Text);
-                sqlCmd.Parameters.AddWithValue("@Password", PasswordBox.Password);
+                sqlCmd.Parameters.AddWithValue("@Username", user);
+                sqlCmd.Parameters.AddWithValue("@Password", Password);
                 int count = Convert.ToInt32(sqlCmd.ExecuteScalar());
-                if (count == 1)
-                {
-                    MainWindow dashboard = new MainWindow();
-                    dashboard.Show();
-                    this.Close();
-                }
-                else
-                {
-                    MessageBox.Show("Username or password incorrect");
-                }
+                LogWindow logWindow = new LogWindow();
+                logWindow.Show();
             }
             catch (Exception ex)
             {

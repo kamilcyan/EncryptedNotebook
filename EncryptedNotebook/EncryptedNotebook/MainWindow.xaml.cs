@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Linq;
 
 namespace EncryptedNotebook
 {
@@ -22,17 +23,43 @@ namespace EncryptedNotebook
         public List<Notes> notes { get; set; }
 
         LogWindow log = new LogWindow();
-        
+
 
         public MainWindow()
         {
             DataContext = this;
             InitializeComponent();
             notes = new List<Notes>();
-            dataGrid.ItemsSource = notes;
-            Notes note = (Notes)dataGrid.SelectedItem;
+            //dataGrid.ItemsSource = notes;
+            //Notes note = (Notes)dataGrid.SelectedItem;
+            string user = log.UserBox.Text;
+
+            SqlConnection sqlCon = new SqlConnection(@"Data Source=localhost\SQLEXPRESS; Initial Catalog=NotesDB; Integrated Security = True;");
+            try
+            {
+                if (sqlCon.State == ConnectionState.Closed)
+                    sqlCon.Open();
+
+                string query = "SELECT * FROM NotesTable";
+                SqlCommand sqlCmd = new SqlCommand(query, sqlCon);
+                sqlCmd.ExecuteNonQuery();
+
+                SqlDataAdapter dataAdp = new SqlDataAdapter(sqlCmd);
+                DataTable dt = new DataTable("NotesTable");
+                dataAdp.Fill(dt);
+                dataGrid.ItemsSource = dt.DefaultView;
+                dataAdp.Update(dt);
+
+                sqlCon.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
 
         }
+
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
@@ -42,34 +69,31 @@ namespace EncryptedNotebook
                 Notes note = new Notes();
                 note.Body = NoteBox.Text;
                 notes.Add(note);
-                dataGrid.Items.Refresh();
                 SqlConnection sqlCon = new SqlConnection(@"Data Source=localhost\SQLEXPRESS; Initial Catalog=NotesDB; Integrated Security = True;");
                 try
                 {
                     if (sqlCon.State == ConnectionState.Closed)
                         sqlCon.Open();
-                    string Author = user;
-                    string Body = note.Body;
+
                     DateTime Date = DateTime.Now;
-                    String query = "INSERT INTO NotesTable (Date, Author, Body) VALUES (@Date, @Author, @Body)";
+                    string query = "INSERT INTO NotesTable (Date, Author, Body) VALUES (@Date, @Author, @Body)";
                     SqlCommand sqlCmd = new SqlCommand(query, sqlCon);
+
                     sqlCmd.CommandType = CommandType.Text;
                     sqlCmd.Parameters.AddWithValue("@Date", Date);
                     sqlCmd.Parameters.AddWithValue("@Author", user);
                     sqlCmd.Parameters.AddWithValue("@Body", note.Body);
                     Convert.ToInt32(sqlCmd.ExecuteScalar());
+
+                    dataGrid.Items.Refresh();
+                    
+                    NoteBox.Text = "";
+                    NoteBox.IsReadOnly = true;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                 }
-                finally
-                {
-                    sqlCon.Close();
-                }
-
-                NoteBox.Text = "";
-                NoteBox.IsReadOnly = true;
             }
 
 
@@ -105,7 +129,7 @@ namespace EncryptedNotebook
                     string Author = user;
                     string Body = note.Body;
                     DateTime Date = DateTime.Now;
-                    String query = "DELETE FROM NotesTable";
+                    String query = "DELETE FROM NotesTable WHERE @Date = Date";
                     SqlCommand sqlCmd = new SqlCommand(query, sqlCon);
                     sqlCmd.CommandType = CommandType.Text;
                     sqlCmd.Parameters.AddWithValue("@Date", Date);
