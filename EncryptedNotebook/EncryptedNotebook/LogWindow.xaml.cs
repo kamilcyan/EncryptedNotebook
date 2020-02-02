@@ -21,10 +21,13 @@ namespace EncryptedNotebook
     /// </summary>
     public partial class LogWindow : Window
     {
+        
+
         public LogWindow()
         {
             InitializeComponent();
-        }
+            string user = UserBox.Text;
+    }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
@@ -42,6 +45,7 @@ namespace EncryptedNotebook
                 if(count == 1)
                 {
                     MainWindow dashboard = new MainWindow();
+                    
                     dashboard.Show();
                     this.Close();
                 }
@@ -67,8 +71,14 @@ namespace EncryptedNotebook
             {
                 if (sqlCon.State == ConnectionState.Closed)
                     sqlCon.Open();
-                String query = "SELECT COUNT(1) FROM tblUser WHERE Username=@Username AND Password=@Password";
-                
+                string user = UserBox.Text;
+                var password = PasswordBox.Password;
+                String query = "INSERT INTO tblUser Username=@Username AND Password=@Password";
+                SqlCommand sqlCmd = new SqlCommand(query, sqlCon);
+                sqlCmd.Parameters.AddWithValue("@Username", UserBox.Text);
+                sqlCmd.Parameters.AddWithValue("@Password", PasswordBox.Password);
+                int count = Convert.ToInt32(sqlCmd.ExecuteScalar());
+                if (count == 1)
                 {
                     MainWindow dashboard = new MainWindow();
                     dashboard.Show();
