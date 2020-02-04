@@ -14,14 +14,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Linq;
 
 namespace EncryptedNotebook
 {
     public partial class MainWindow : Window
     {
         public List<Notes> notes { get; set; }
-
         LogWindow log = new LogWindow();
 
 
@@ -29,7 +27,6 @@ namespace EncryptedNotebook
         {
             DataContext = this;
             InitializeComponent();
-            notes = new List<Notes>();
             //dataGrid.ItemsSource = notes;
             //Notes note = (Notes)dataGrid.SelectedItem;
             string user = log.UserBox.Text;
@@ -66,9 +63,6 @@ namespace EncryptedNotebook
             string user = log.UserBox.Text;
             if (NoteBox.Text != "")
             {
-                Notes note = new Notes();
-                note.Body = NoteBox.Text;
-                notes.Add(note);
                 SqlConnection sqlCon = new SqlConnection(@"Data Source=localhost\SQLEXPRESS; Initial Catalog=NotesDB; Integrated Security = True;");
                 try
                 {
@@ -82,13 +76,34 @@ namespace EncryptedNotebook
                     sqlCmd.CommandType = CommandType.Text;
                     sqlCmd.Parameters.AddWithValue("@Date", Date);
                     sqlCmd.Parameters.AddWithValue("@Author", user);
-                    sqlCmd.Parameters.AddWithValue("@Body", note.Body);
+                    sqlCmd.Parameters.AddWithValue("@Body", NoteBox.Text);
                     Convert.ToInt32(sqlCmd.ExecuteScalar());
 
                     dataGrid.Items.Refresh();
                     
                     NoteBox.Text = "";
                     NoteBox.IsReadOnly = true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                try
+                {
+                    if (sqlCon.State == ConnectionState.Closed)
+                        sqlCon.Open();
+
+                    string query = "SELECT * FROM NotesTable";
+                    SqlCommand sqlCmd = new SqlCommand(query, sqlCon);
+                    sqlCmd.ExecuteNonQuery();
+
+                    SqlDataAdapter dataAdp = new SqlDataAdapter(sqlCmd);
+                    DataTable dt = new DataTable("NotesTable");
+                    dataAdp.Fill(dt);
+                    dataGrid.ItemsSource = dt.DefaultView;
+                    dataAdp.Update(dt);
+
+                    sqlCon.Close();
                 }
                 catch (Exception ex)
                 {
@@ -112,53 +127,79 @@ namespace EncryptedNotebook
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            string user = log.UserBox.Text;
+            SqlConnection sqlCon = new SqlConnection(@"Data Source=localhost\SQLEXPRESS; Initial Catalog=NotesDB; Integrated Security = True;");
+            try
+            {
+                if (sqlCon.State == ConnectionState.Closed)
+                    sqlCon.Open();
 
+                string query = "DELETE FROM NotesTable";
+                SqlCommand sqlCmd = new SqlCommand(query, sqlCon);
+                sqlCmd.ExecuteNonQuery();
+
+                SqlDataAdapter dataAdp = new SqlDataAdapter(sqlCmd);
+                DataTable dt = new DataTable("NotesTable");
+                dataAdp.Fill(dt);
+                dataGrid.ItemsSource = dt.DefaultView;
+                dataAdp.Update(dt);
+
+                sqlCon.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             Notes note = new Notes();
             note = (Notes)dataGrid.SelectedItem;
+            notes.Add(note);
             if (note != null)
             {
                 notes.Remove(note);
                 NoteBox.Text = "";
                 dataGrid.Items.Refresh();
-                SqlConnection sqlCon = new SqlConnection(@"Data Source=localhost\SQLEXPRESS; Initial Catalog=NotesDB; Integrated Security = True;");
-                try
-                {
-                    if (sqlCon.State == ConnectionState.Closed)
-                        sqlCon.Open();
-                    string Author = user;
-                    string Body = note.Body;
-                    DateTime Date = DateTime.Now;
-                    String query = "DELETE FROM NotesTable WHERE @Date = Date";
-                    SqlCommand sqlCmd = new SqlCommand(query, sqlCon);
-                    sqlCmd.CommandType = CommandType.Text;
-                    sqlCmd.Parameters.AddWithValue("@Date", Date);
-                    sqlCmd.Parameters.AddWithValue("@Author", user);
-                    sqlCmd.Parameters.AddWithValue("@Body", note.Body);
-                    Convert.ToInt32(sqlCmd.ExecuteScalar());
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                finally
-                {
-                    sqlCon.Close();
-                }
             }
-
         }
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Notes notes = new Notes();
-           
+            SqlConnection sqlCon = new SqlConnection(@"Data Source=localhost\SQLEXPRESS; Initial Catalog=NotesDB; Integrated Security = True;");
             try
             {
-                notes = (Notes)dataGrid.SelectedItem;
-                NoteBox.Text = notes.Body;
+                if (sqlCon.State == ConnectionState.Closed)
+                    sqlCon.Open();
+
+                string query = "Select Body FROM NotesTable where Body = @Body";
+                SqlCommand sqlCmd = new SqlCommand(query, sqlCon);
+                sqlCmd.ExecuteNonQuery();
+                sqlCmd.Parameters.AddWithValue("@Body", dataGrid.SelectedItem);
+                var Body = dataGrid.SelectedItem;
+                NoteBox.Text = query;
+                SqlDataAdapter dataAdp = new SqlDataAdapter(sqlCmd);
+                DataTable dt = new DataTable("NotesTable");
+                dataAdp.Fill(dt);
+                dataGrid.ItemsSource = dt.DefaultView;
+                dataAdp.Update(dt);
+
+                sqlCon.Close();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            //Notes note = new Notes();
+
+            //try
+            //{
+            //    note = (Notes)dataGrid.SelectedItem;
+            //    notes.Add(note);
+            //    NoteBox.Text = note.Body;
+            //    dataGrid.Items.Refresh();
+            //}
+            //catch
+            //{
+
+            //}
 
         }
     }
