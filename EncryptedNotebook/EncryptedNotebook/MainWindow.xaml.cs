@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,9 +26,9 @@ namespace EncryptedNotebook
 
             DataContext = this;
             InitializeComponent();
-            notes = new List<Notes>();
-            Notes note = new Notes();
-            string user = LogWindow.recby;
+            //notes = new List<Notes>();
+            //Notes note = new Notes();
+            //string user = LogWindow.recby;
             
             dataGrid.ItemsSource = notes;
             //Notes note = (Notes)dataGrid.SelectedItem;
@@ -40,17 +42,29 @@ namespace EncryptedNotebook
 
             //if (NoteBox.Text != "")
             //{
+            notes = new List<Notes>();
+            Notes note = new Notes();
+            note.Body = NoteBox.Text;
+            note.Author = LogWindow.recby;
+            notes.Add(note);
+            dataGrid.Items.Refresh();
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.Converters.Add(new JavaScriptDateTimeConverter());
+            serializer.NullValueHandling = NullValueHandling.Ignore;
+            string output = JsonConvert.SerializeObject(note);
 
-                Notes note = new Notes();
-                note.Body = NoteBox.Text;
-                note.Author = LogWindow.recby;
-                notes.Add(note);
-                dataGrid.Items.Refresh();
-                connection.Connect(notes);
-                NoteBox.Text = "";
-                NoteBox.IsReadOnly = true;
+
+            //connection.Connect(notes);
+            NoteBox.Text = "";
+            NoteBox.IsReadOnly = true;
+            view(output);
             //}
+        }   
 
+        public void view(string outp)
+        {
+            Notes deserializedProduct = JsonConvert.DeserializeObject<Notes>(outp);
+            dataGrid.ItemsSource = outp;
         }
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
