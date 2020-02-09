@@ -33,46 +33,50 @@ namespace EncryptedNotebook
             dataGrid.ItemsSource = notes;
             //Notes note = (Notes)dataGrid.SelectedItem;
 
+
+
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             LogWindow logWindow = new LogWindow();
             Connection connection = new Connection();
-            DataGrid dataGrid = new DataGrid();
+            
 
             notes = new List<Notes>();
             Notes note = new Notes();
             note.Body = NoteBox.Text;
             note.Author = LogWindow.recby;
             notes.Add(note);
-            dataGrid.ItemsSource = notes;
+            
             dataGrid.Items.Refresh();
 
+            
 
             JsonSerializer serializer = new JsonSerializer();
             serializer.Converters.Add(new JavaScriptDateTimeConverter());
             serializer.NullValueHandling = NullValueHandling.Ignore;
-            string output = JsonConvert.SerializeObject(note);
+            string output = JsonConvert.SerializeObject(notes);
             
             MessageBox.Show(output);
-            
 
             NoteBox.Text = "";
             NoteBox.IsReadOnly = true;
 
-            var jPersonComplex = JsonConvert.DeserializeObject<Notes>(output);
-
-            DataGridTextColumn textColumn = new DataGridTextColumn();
-            textColumn.Header = "Body";
-            textColumn.Width = 50;
-            dataGrid.Columns.Add(textColumn);
-
             
+            
+
+
+            //DataGridTextColumn textColumn = new DataGridTextColumn();
+            //textColumn.Header = "Body";
+            //textColumn.Width = 50;
+            //dataGrid.Columns.Add(textColumn);
+
+
             //this.dataGrid.Rows.Add()
 
             //dataGrid.ItemsSource = jPersonComplex.Body.ToString();
-        }   
+        }
 
         //public void view(string outp)
         //{
