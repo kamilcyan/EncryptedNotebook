@@ -19,7 +19,7 @@
         <TextBlock HorizontalAlignment="Center" FontSize="30" VerticalAlignment="Center" TextAlignment="Center">Welcome</TextBlock>
         <TextBox x:Name="NoteBox" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible" Grid.Row="1" Margin="10,19,30,21" AcceptsReturn="True"/>
         <StackPanel Margin="10" Grid.Column="1" Grid.Row="1">
-            <DataGrid AutoGenerateColumns="True" HorizontalAlignment="Center" HorizontalContentAlignment="Center"  Name="dataGrid" SelectionChanged="DataGrid_SelectionChanged"/>
+            <DataGrid  AutoGenerateColumns="True" HorizontalAlignment="Center" HorizontalContentAlignment="Center"  Name="dataGrid" SelectionChanged="DataGrid_SelectionChanged"/>
         </StackPanel>
         <WrapPanel Grid.Row="2">
             <Button x:Name="SaveButton" Content="Save" Height="20" Margin="20" Width="90" VerticalAlignment="Center" Click="SaveButton_Click"/>

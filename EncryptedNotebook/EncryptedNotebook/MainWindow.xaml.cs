@@ -39,33 +39,46 @@ namespace EncryptedNotebook
         {
             LogWindow logWindow = new LogWindow();
             Connection connection = new Connection();
+            DataGrid dataGrid = new DataGrid();
 
-            //if (NoteBox.Text != "")
-            //{
             notes = new List<Notes>();
             Notes note = new Notes();
             note.Body = NoteBox.Text;
             note.Author = LogWindow.recby;
             notes.Add(note);
+            dataGrid.ItemsSource = notes;
             dataGrid.Items.Refresh();
+
+
             JsonSerializer serializer = new JsonSerializer();
             serializer.Converters.Add(new JavaScriptDateTimeConverter());
             serializer.NullValueHandling = NullValueHandling.Ignore;
             string output = JsonConvert.SerializeObject(note);
+            
+            MessageBox.Show(output);
+            
 
-
-            //connection.Connect(notes);
             NoteBox.Text = "";
             NoteBox.IsReadOnly = true;
-            view(output);
-            //}
+
+            var jPersonComplex = JsonConvert.DeserializeObject<Notes>(output);
+
+            DataGridTextColumn textColumn = new DataGridTextColumn();
+            textColumn.Header = "Body";
+            textColumn.Width = 50;
+            dataGrid.Columns.Add(textColumn);
+
+            
+            //this.dataGrid.Rows.Add()
+
+            //dataGrid.ItemsSource = jPersonComplex.Body.ToString();
         }   
 
-        public void view(string outp)
-        {
-            Notes deserializedProduct = JsonConvert.DeserializeObject<Notes>(outp);
-            dataGrid.ItemsSource = outp;
-        }
+        //public void view(string outp)
+        //{
+        //    var jNotes = JsonConvert.DeserializeObject<Notes>(outp);
+        //    dataGrid.ItemsSource =  jNotes;
+        //}
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
