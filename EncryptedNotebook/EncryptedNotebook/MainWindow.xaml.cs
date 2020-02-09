@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,15 +27,23 @@ namespace EncryptedNotebook
 
             DataContext = this;
             InitializeComponent();
-            //notes = new List<Notes>();
-            //Notes note = new Notes();
-            //string user = LogWindow.recby;
-            
+
+
+            notes = new List<Notes>();
             dataGrid.ItemsSource = notes;
-            //Notes note = (Notes)dataGrid.SelectedItem;
+            Notes note = (Notes)dataGrid.SelectedItem;
 
+            // read file into a string and deserialize JSON to a type
+            //Notes note1 = JsonConvert.DeserializeObject<Notes>(File.ReadAllText(@"D:\git\EncryptedNotebook\notes.json"));
 
-
+            // deserialize JSON directly from a file
+            using (StreamReader file = File.OpenText(@"D:\git\EncryptedNotebook\notes.json"))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                char note2 = (char)serializer.Deserialize(file, typeof(char));
+                
+                dataGrid.ItemsSource = note2.ToString();
+            }
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -43,22 +52,32 @@ namespace EncryptedNotebook
             Connection connection = new Connection();
             
 
-            notes = new List<Notes>();
             Notes note = new Notes();
+            notes = new List<Notes>();
+
             note.Body = NoteBox.Text;
             note.Author = LogWindow.recby;
             notes.Add(note);
-            
+            dataGrid.ItemsSource = notes;
             dataGrid.Items.Refresh();
+            dataGrid.UpdateLayout();
 
-            
 
-            JsonSerializer serializer = new JsonSerializer();
-            serializer.Converters.Add(new JavaScriptDateTimeConverter());
-            serializer.NullValueHandling = NullValueHandling.Ignore;
-            string output = JsonConvert.SerializeObject(notes);
+            File.WriteAllText(@"D:\git\EncryptedNotebook\notes.json", JsonConvert.SerializeObject(note));
+
+            // serialize JSON directly to a file
+            using (StreamWriter file = File.CreateText(@"D:\git\EncryptedNotebook\notes.jso"))
+            {
+                JsonSerializer serializer1 = new JsonSerializer();
+                serializer1.Serialize(file, note);
+            }
+
+            //JsonSerializer serializer = new JsonSerializer();
+            //serializer.Converters.Add(new JavaScriptDateTimeConverter());
+            //serializer.NullValueHandling = NullValueHandling.Ignore;
+            //string output = JsonConvert.SerializeObject(notes);
             
-            MessageBox.Show(output);
+            MessageBox.Show("done");
 
             NoteBox.Text = "";
             NoteBox.IsReadOnly = true;
@@ -67,15 +86,6 @@ namespace EncryptedNotebook
             
 
 
-            //DataGridTextColumn textColumn = new DataGridTextColumn();
-            //textColumn.Header = "Body";
-            //textColumn.Width = 50;
-            //dataGrid.Columns.Add(textColumn);
-
-
-            //this.dataGrid.Rows.Add()
-
-            //dataGrid.ItemsSource = jPersonComplex.Body.ToString();
         }
 
         //public void view(string outp)
