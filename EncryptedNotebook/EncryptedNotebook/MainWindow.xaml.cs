@@ -31,19 +31,13 @@ namespace EncryptedNotebook
 
             notes = new List<Notes>();
             dataGrid.ItemsSource = notes;
-            Notes note = (Notes)dataGrid.SelectedItem;
+            //Notes note = (Notes)dataGrid.SelectedItem;
 
             // read file into a string and deserialize JSON to a type
             //Notes note1 = JsonConvert.DeserializeObject<Notes>(File.ReadAllText(@"D:\git\EncryptedNotebook\notes.json"));
 
             // deserialize JSON directly from a file
-            using (StreamReader file = File.OpenText(@"D:\git\EncryptedNotebook\notes.json"))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                char note2 = (char)serializer.Deserialize(file, typeof(char));
-                
-                dataGrid.ItemsSource = note2.ToString();
-            }
+            
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -53,7 +47,6 @@ namespace EncryptedNotebook
             
 
             Notes note = new Notes();
-            notes = new List<Notes>();
 
             note.Body = NoteBox.Text;
             note.Author = LogWindow.recby;
@@ -61,16 +54,9 @@ namespace EncryptedNotebook
             dataGrid.ItemsSource = notes;
             dataGrid.Items.Refresh();
             dataGrid.UpdateLayout();
+            save();
 
-
-            File.WriteAllText(@"D:\git\EncryptedNotebook\notes.json", JsonConvert.SerializeObject(note));
-
-            // serialize JSON directly to a file
-            using (StreamWriter file = File.CreateText(@"D:\git\EncryptedNotebook\notes.jso"))
-            {
-                JsonSerializer serializer1 = new JsonSerializer();
-                serializer1.Serialize(file, note);
-            }
+            
 
             //JsonSerializer serializer = new JsonSerializer();
             //serializer.Converters.Add(new JavaScriptDateTimeConverter());
@@ -128,6 +114,30 @@ namespace EncryptedNotebook
             }
             catch { }
 
+        }
+
+        public void save(/*List<Notes> note*/)
+        {
+
+            File.WriteAllText(@"D:\git\EncryptedNotebook\notes.json", JsonConvert.SerializeObject(notes));
+
+            // serialize JSON directly to a file
+            using (StreamWriter file = File.CreateText(@"D:\git\EncryptedNotebook\notes.jso"))
+            {
+                JsonSerializer serializer1 = new JsonSerializer();
+                serializer1.Serialize(file, notes);
+            }
+        }
+
+        public void read()
+        {
+            using (StreamReader file = File.OpenText(@"D:\git\EncryptedNotebook\notes.json"))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                Notes note2 = (Notes)serializer.Deserialize(file, typeof(Notes));
+
+                dataGrid.ItemsSource = note2.ToString();
+            }
         }
     }
 }
