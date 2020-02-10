@@ -24,13 +24,18 @@ namespace EncryptedNotebook
 
         public MainWindow()
         {
-
             DataContext = this;
             InitializeComponent();
 
+            
 
             notes = new List<Notes>();
-            dataGrid.ItemsSource = notes;
+            
+
+            read();
+
+
+            //dataGrid.ItemsSource = notes;
             //Notes note = (Notes)dataGrid.SelectedItem;
 
             // read file into a string and deserialize JSON to a type
@@ -51,18 +56,19 @@ namespace EncryptedNotebook
             note.Body = NoteBox.Text;
             note.Author = LogWindow.recby;
             notes.Add(note);
-            dataGrid.ItemsSource = notes;
+            //dataGrid.ItemsSource = notes;
+            
             dataGrid.Items.Refresh();
             dataGrid.UpdateLayout();
             save();
 
-            
+            read();
 
             //JsonSerializer serializer = new JsonSerializer();
             //serializer.Converters.Add(new JavaScriptDateTimeConverter());
             //serializer.NullValueHandling = NullValueHandling.Ignore;
             //string output = JsonConvert.SerializeObject(notes);
-            
+
             MessageBox.Show("done");
 
             NoteBox.Text = "";
@@ -133,10 +139,20 @@ namespace EncryptedNotebook
         {
             using (StreamReader file = File.OpenText(@"D:\git\EncryptedNotebook\notes.json"))
             {
+                Notes note = new Notes();
                 JsonSerializer serializer = new JsonSerializer();
-                Notes note2 = (Notes)serializer.Deserialize(file, typeof(Notes));
+                //string note3 = (string)serializer.Deserialize(file, typeof(List<>));
+                Notes[] dupa = (Notes[])serializer.Deserialize(file, typeof(Notes[]));
 
-                dataGrid.ItemsSource = note2.ToString();
+                notes = dupa.ToList();
+                dataGrid.ItemsSource = notes.Where(a => a.);
+
+                //var note2 = JsonConvert.DeserializeObject<Notes>(note3);
+
+                //note.Body = note2.Where<Body>;
+                //note.Author = LogWindow.recby;
+                //notes.Add(note);
+                //dataGrid.ItemsSource = notes.ConvertAll(x => new { Value = x });
             }
         }
     }
