@@ -26,27 +26,33 @@ namespace EncryptedNotebook
         {
             DataContext = this;
             InitializeComponent();
-
-            
-
             notes = new List<Notes>();
-            
 
-            read();
+            firstRead();
+        }
 
+        private void firstRead()
+        {
+            using (StreamReader file = File.OpenText(@"D:\git\EncryptedNotebook\notes.json"))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                Notes[] dupa = (Notes[])serializer.Deserialize(file, typeof(Notes[]));
+                
+                foreach (var element in dupa)
+                {
+                    notes.Add(element);
+                }
 
-            //dataGrid.ItemsSource = notes;
-            //Notes note = (Notes)dataGrid.SelectedItem;
-
-            // read file into a string and deserialize JSON to a type
-            //Notes note1 = JsonConvert.DeserializeObject<Notes>(File.ReadAllText(@"D:\git\EncryptedNotebook\notes.json"));
-
-            // deserialize JSON directly from a file
-            
+                dataGrid.ItemsSource = notes;
+                //dataGrid.Items.Refresh();
+                dataGrid.UpdateLayout();
+            }
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            //read();
+
             LogWindow logWindow = new LogWindow();
             Connection connection = new Connection();
             
@@ -56,35 +62,21 @@ namespace EncryptedNotebook
             note.Body = NoteBox.Text;
             note.Author = LogWindow.recby;
             notes.Add(note);
-            //dataGrid.ItemsSource = notes;
             
             dataGrid.Items.Refresh();
             dataGrid.UpdateLayout();
-            save();
-
-            read();
-
-            //JsonSerializer serializer = new JsonSerializer();
-            //serializer.Converters.Add(new JavaScriptDateTimeConverter());
-            //serializer.NullValueHandling = NullValueHandling.Ignore;
-            //string output = JsonConvert.SerializeObject(notes);
 
             MessageBox.Show("done");
 
             NoteBox.Text = "";
             NoteBox.IsReadOnly = true;
 
-            
-            
+            dataGrid.ItemsSource = notes;
+            dataGrid.Items.Refresh();
+            dataGrid.UpdateLayout();
 
-
+            save();
         }
-
-        //public void view(string outp)
-        //{
-        //    var jNotes = JsonConvert.DeserializeObject<Notes>(outp);
-        //    dataGrid.ItemsSource =  jNotes;
-        //}
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
@@ -105,6 +97,7 @@ namespace EncryptedNotebook
                 notes.Remove(note);
                 NoteBox.Text = "";
                 dataGrid.Items.Refresh();
+                save();
             }
 
         }
@@ -122,7 +115,7 @@ namespace EncryptedNotebook
 
         }
 
-        public void save(/*List<Notes> note*/)
+        public void save()
         {
 
             File.WriteAllText(@"D:\git\EncryptedNotebook\notes.json", JsonConvert.SerializeObject(notes));
@@ -139,20 +132,16 @@ namespace EncryptedNotebook
         {
             using (StreamReader file = File.OpenText(@"D:\git\EncryptedNotebook\notes.json"))
             {
-                Notes note = new Notes();
+
+
                 JsonSerializer serializer = new JsonSerializer();
-                //string note3 = (string)serializer.Deserialize(file, typeof(List<>));
                 Notes[] dupa = (Notes[])serializer.Deserialize(file, typeof(Notes[]));
 
-                notes = dupa.ToList();
-                dataGrid.ItemsSource = notes.Where(a => a.);
-
-                //var note2 = JsonConvert.DeserializeObject<Notes>(note3);
-
-                //note.Body = note2.Where<Body>;
-                //note.Author = LogWindow.recby;
-                //notes.Add(note);
-                //dataGrid.ItemsSource = notes.ConvertAll(x => new { Value = x });
+                //var nott = new List<Notes>();
+                foreach (var element in dupa)
+                {
+                    notes.Add(element);
+                }
             }
         }
     }
