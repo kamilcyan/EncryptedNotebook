@@ -36,26 +36,21 @@ namespace EncryptedNotebook
             using (StreamReader file = File.OpenText(@"D:\git\EncryptedNotebook\notes.json"))
             {
                 JsonSerializer serializer = new JsonSerializer();
-                Notes[] dupa = (Notes[])serializer.Deserialize(file, typeof(Notes[]));
+                Notes[] temporary = (Notes[])serializer.Deserialize(file, typeof(Notes[]));
                 
-                foreach (var element in dupa)
+                foreach (var element in temporary)
                 {
                     notes.Add(element);
                 }
 
                 dataGrid.ItemsSource = notes;
-                //dataGrid.Items.Refresh();
                 dataGrid.UpdateLayout();
             }
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            //read();
-
-            LogWindow logWindow = new LogWindow();
             Connection connection = new Connection();
-            
 
             Notes note = new Notes();
 
@@ -85,6 +80,7 @@ namespace EncryptedNotebook
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
+            NoteBox.Text = "";
             NoteBox.IsReadOnly = false;
         }
 
